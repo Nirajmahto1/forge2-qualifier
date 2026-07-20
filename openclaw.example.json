@@ -1,0 +1,29 @@
+{
+  "channels": {
+    "slack": {
+      "enabled": true,
+      "mode": "socket",
+      "appToken": {
+        "source": "env",
+        "id": "SLACK_APP_TOKEN"
+      },
+      "botToken": {
+        "source": "env",
+        "id": "SLACK_BOT_TOKEN"
+      },
+      "channels": {
+        "coder": "SLACK_CHANNEL_AGENT_CODER",
+        "log": "SLACK_CHANNEL_AGENT_LOG"
+      }
+    }
+  },
+  "agents": {
+    "openclaw": {
+      "role": "hands",
+      "provider": "ollama",
+      "model": "qwen2.5-coder",
+      "fallbackProvider": "groq",
+      "fallbackModel": "openai/gpt-oss-120b"
+    }
+  }
+}
