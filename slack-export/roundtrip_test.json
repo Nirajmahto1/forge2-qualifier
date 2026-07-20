@@ -1,0 +1,33 @@
+{
+  "auth_test": {
+    "ok": true,
+    "url": "https://forge2-niraj.slack.com/",
+    "team": "forge2-niraj",
+    "user": "forge2_agent",
+    "team_id": "T0BJCJRG1S5",
+    "user_id": "U0BHZUL87GF",
+    "bot_id": "B0BJ92J7CQK"
+  },
+  "post_message": {
+    "ok": true,
+    "channel": "C0BJEEEH6SY",
+    "ts": "1784563574.397799",
+    "message": {
+      "user": "U0BHZUL87GF",
+      "type": "message",
+      "text": "Round-trip test ✅ - Hermes + OpenClaw Qualifier check",
+      "bot_id": "B0BJ92J7CQK",
+      "app_id": "A0BJ7EQGB7F"
+    }
+  },
+  "conversations_history": {
+    "ok": true,
+    "channel": "C0BJEEEH6SY",
+    "latest_message": {
+      "user": "U0BHZUL87GF",
+      "type": "message",
+      "ts": "1784563574.397799",
+      "text": "Round-trip test ✅ - Hermes + OpenClaw Qualifier check"
+    }
+  }
+}
