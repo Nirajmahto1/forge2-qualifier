@@ -57,7 +57,7 @@ The bot integration was verified live using Slack REST API methods:
 |  | Scaffold API      |  |  | Build React Kanban   |  |  | Setup Slack Bot     |  |
 |  | [Backend] [Bug]   |  |  | [Frontend] [Feature] |  |  | [DevOps]            |  |
 |  | 👤 Niraj Mahto    |  |  | 👤 Priya Sharma      |  |  | 👤 Niraj Mahto      |  |
-|  | ⚠️ OVERDUE 18 Jul |  |  | 📅 22 Jul            |  |  | ✅ 19 Jul           |  |
+|  | ⚠️ OVERDUE 20 Jul |  |  | 📅 25 Jul            |  |  | ✅ 20 Jul           |  |
 |  +-------------------+  |  +----------------------+  |  +---------------------+  |
 +-----------------------------------------------------------------------------------+
 ```

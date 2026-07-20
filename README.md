@@ -1,6 +1,6 @@
 # Forge 2 Qualifier - Two-Agent System & Tiny Kanban Board
 
-> **Submission for Forge 2 Edition 2 Qualifier (Saturday 18 July 2026)**  
+> **Submission for Forge 2 Edition 2 Qualifier (Saturday 25 July 2026)**  
 > **Repository Owner:** Niraj Mahto (`nirajmahto1`)  
 > **Contact Email:** `itsnirajmahto@gmail.com`  
 > **GitHub Repository:** [https://github.com/nirajmahto1/forge2-qualifier](https://github.com/nirajmahto1/forge2-qualifier)  

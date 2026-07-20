@@ -38,7 +38,7 @@ const MOCK_CARDS = [
     title: 'Implement Overdue Cards Notification',
     description: 'Add visual highlights and warning badges for cards past their due date.',
     position: 0,
-    due_date: '2026-07-18 10:00:00',
+    due_date: '2026-07-20 10:00:00',
     assigned_member_id: 1,
     assigned_member: MOCK_MEMBERS[0],
     tags: [MOCK_TAGS[1], MOCK_TAGS[3]],

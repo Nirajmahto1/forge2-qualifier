@@ -60,7 +60,7 @@ class DatabaseSeeder extends Seeder
             'title' => 'Implement Overdue Cards Notification',
             'description' => 'Add visual highlights and warning badges for cards past their due date.',
             'position' => 0,
-            'due_date' => '2026-07-18 10:00:00', // Past due date (OVERDUE!)
+            'due_date' => '2026-07-20 10:00:00', // Past due date (OVERDUE!)
             'assigned_member_id' => $m1->id,
         ]);
         $card1->tags()->attach([$tagFrontend->id, $tagFeature->id]);
