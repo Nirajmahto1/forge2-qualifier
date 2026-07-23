@@ -1,15 +1,10 @@
 services:
   - type: web
     name: forge-kanban-api
-    env: php
+    runtime: docker
     plan: free
-    rootDir: backend
-    buildCommand: |
-      composer install --no-dev --optimize-autoloader
-      php artisan key:generate --force
-      touch database/database.sqlite
-      php artisan migrate:fresh --seed --force
-    startCommand: php artisan serve --host 0.0.0.0 --port $PORT
+    dockerfilePath: backend/Dockerfile
+    dockerContext: backend
     envVars:
       - key: APP_ENV
         value: production
@@ -18,7 +13,7 @@ services:
       - key: DB_CONNECTION
         value: sqlite
       - key: DB_DATABASE
-        value: /tmp/database.sqlite
+        value: /app/database/database.sqlite
       - key: SESSION_DRIVER
         value: file
       - key: CACHE_STORE
