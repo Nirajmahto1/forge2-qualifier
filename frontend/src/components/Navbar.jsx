@@ -1,7 +1,7 @@
 import React from 'react';
-import { Layout, Users, Plus, Cpu, Activity } from 'lucide-react';
+import { Layout, Users, Plus, Cpu, RefreshCw, Database } from 'lucide-react';
 
-export default function Navbar({ boards, activeBoard, onSelectBoard, onCreateBoard, onOpenMembers }) {
+export default function Navbar({ boards, activeBoard, onSelectBoard, onCreateBoard, onOpenMembers, isLiveConnected, onRetrySync }) {
   return (
     <header className="navbar">
       <div className="navbar-brand">
@@ -36,6 +36,19 @@ export default function Navbar({ boards, activeBoard, onSelectBoard, onCreateBoa
           <Users size={16} />
           <span>Members</span>
         </button>
+
+        {isLiveConnected ? (
+          <div className="agent-status-pill live-db-pill" title="Connected to Live Render SQLite API">
+            <Database size={14} className="agent-icon" />
+            <span className="pulse-dot green-dot"></span>
+            <span className="status-text">Live DB</span>
+          </div>
+        ) : (
+          <button onClick={onRetrySync} className="btn-secondary sync-db-btn" title="Click to sync with Live Render Database">
+            <RefreshCw size={14} className="spin-icon" />
+            <span>Sync Live DB</span>
+          </button>
+        )}
 
         <div className="agent-status-pill" title="Hermes & OpenClaw Connected">
           <Cpu size={14} className="agent-icon" />

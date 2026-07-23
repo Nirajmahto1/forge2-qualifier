@@ -14,14 +14,14 @@ const MOCK_BOARD = {
 const MOCK_MEMBERS = [
   { id: 1, board_id: 1, name: 'Niraj Mahto', email: 'itsnirajmahto@gmail.com', avatar_color: '#3b82f6' },
   { id: 2, board_id: 1, name: 'Priya Sharma', email: 'priya@example.com', avatar_color: '#10b981' },
-  { id: 3, board_id: 1, name: 'Hermes Agent', email: 'hermes@agent.local', avatar_color: '#8b5cf6' },
+  { id: 3, board_id: 1, name: 'Hermes Agent', email: 'hermes@agent.ai', avatar_color: '#8b5cf6' },
 ];
 
 const MOCK_TAGS = [
   { id: 1, name: 'Backend', color: '#ef4444' },
   { id: 2, name: 'Frontend', color: '#3b82f6' },
-  { id: 3, name: 'Bug', color: '#f59e0b' },
-  { id: 4, name: 'Feature', color: '#10b981' },
+  { id: 3, name: 'Feature', color: '#10b981' },
+  { id: 4, name: 'Bug', color: '#f59e0b' },
   { id: 5, name: 'DevOps', color: '#8b5cf6' },
 ];
 
@@ -93,7 +93,7 @@ export default function App() {
   const [selectedCard, setSelectedCard] = useState(null);
   const [showMemberModal, setShowMemberModal] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [usingMock, setUsingMock] = useState(false);
+  const [isLiveConnected, setIsLiveConnected] = useState(false);
 
   useEffect(() => {
     loadInitialData();
@@ -110,10 +110,10 @@ export default function App() {
       }
       const tagsList = await api.getTags();
       setTags(tagsList);
-      setUsingMock(false);
+      setIsLiveConnected(true);
     } catch (err) {
-      console.warn("Backend API not reachable; operating in live demonstration mode:", err);
-      setUsingMock(true);
+      console.warn("Backend API cold start; operating with fallback board until live sync:", err);
+      setIsLiveConnected(false);
       setBoards([MOCK_BOARD]);
       setActiveBoard(MOCK_BOARD);
       setLists(MOCK_LISTS);
@@ -135,74 +135,70 @@ export default function App() {
 
       const boardMembers = await api.getMembers(boardId);
       setMembers(boardMembers);
+      setIsLiveConnected(true);
     } catch (err) {
-      console.warn("Using local board fallback state");
+      console.warn("Using local board fallback state:", err);
     }
   };
 
   const handleSelectBoard = (boardId) => {
-    if (usingMock) {
-      const found = boards.find(b => b.id === boardId);
-      if (found) setActiveBoard(found);
-    } else {
-      loadBoardDetails(boardId);
-    }
+    loadBoardDetails(boardId);
   };
 
   const handleCreateBoard = async () => {
     const name = prompt("Enter new board name:");
     if (!name || !name.trim()) return;
-    if (usingMock) {
+    try {
+      const created = await api.createBoard({ name: name.trim() });
+      setBoards(prev => [...prev, created]);
+      await loadBoardDetails(created.id);
+      setIsLiveConnected(true);
+    } catch (err) {
+      console.warn("Local board creation fallback:", err);
       const newBoard = { id: Date.now(), name: name.trim(), description: 'New Kanban Board' };
-      setBoards([...boards, newBoard]);
+      setBoards(prev => [...prev, newBoard]);
       setActiveBoard(newBoard);
       setLists([]);
       setCards([]);
-    } else {
-      try {
-        const created = await api.createBoard({ name: name.trim() });
-        setBoards([...boards, created]);
-        await loadBoardDetails(created.id);
-      } catch (err) {
-        alert("Failed to create board: " + err.message);
-      }
     }
   };
 
   const handleAddList = async (title) => {
     if (!activeBoard) return;
-    if (usingMock) {
+    try {
+      const newList = await api.createList(activeBoard.id, { name: title, position: lists.length });
+      newList.cards = [];
+      setLists(prev => [...prev, newList]);
+      setIsLiveConnected(true);
+    } catch (err) {
+      console.warn("Local list creation fallback:", err);
       const newList = { id: Date.now(), board_id: activeBoard.id, name: title, position: lists.length };
-      setLists([...lists, newList]);
-    } else {
-      try {
-        const newList = await api.createList(activeBoard.id, { name: title, position: lists.length });
-        newList.cards = [];
-        setLists([...lists, newList]);
-      } catch (err) {
-        alert("Failed to create list: " + err.message);
-      }
+      setLists(prev => [...prev, newList]);
     }
   };
 
   const handleDeleteList = async (listId) => {
     if (!confirm("Are you sure you want to delete this list and all its cards?")) return;
-    if (usingMock) {
-      setLists(lists.filter(l => l.id !== listId));
-      setCards(cards.filter(c => c.board_list_id !== listId));
-    } else {
-      try {
-        await api.deleteList(listId);
-        setLists(lists.filter(l => l.id !== listId));
-        setCards(cards.filter(c => c.board_list_id !== listId));
-      } catch (err) {
-        alert("Failed to delete list: " + err.message);
-      }
+    try {
+      await api.deleteList(listId);
+      setLists(prev => prev.filter(l => l.id !== listId));
+      setCards(prev => prev.filter(c => c.board_list_id !== listId));
+      setIsLiveConnected(true);
+    } catch (err) {
+      console.warn("Local list delete fallback:", err);
+      setLists(prev => prev.filter(l => l.id !== listId));
+      setCards(prev => prev.filter(c => c.board_list_id !== listId));
     }
   };
 
   const handleAddCard = async (listId, cardData) => {
-    if (usingMock) {
+    try {
+      const listCards = cards.filter(c => c.board_list_id === listId);
+      const createdCard = await api.createCard(listId, { ...cardData, position: listCards.length });
+      setCards(prev => [...prev, createdCard]);
+      setIsLiveConnected(true);
+    } catch (err) {
+      console.warn("Local card creation fallback:", err);
       const listCards = cards.filter(c => c.board_list_id === listId);
       const newCard = {
         id: Date.now(),
@@ -215,25 +211,24 @@ export default function App() {
         tags: [],
         comments_count: 0,
       };
-      setCards([...cards, newCard]);
-    } else {
-      try {
-        const listCards = cards.filter(c => c.board_list_id === listId);
-        const createdCard = await api.createCard(listId, { ...cardData, position: listCards.length });
-        setCards([...cards, createdCard]);
-      } catch (err) {
-        alert("Failed to create card: " + err.message);
-      }
+      setCards(prev => [...prev, newCard]);
     }
   };
 
   const handleUpdateCard = async (cardId, updatedData) => {
-    if (usingMock) {
+    try {
+      const updated = await api.updateCard(cardId, updatedData);
+      setCards(prev => prev.map(c => c.id === cardId ? { ...c, ...updated } : c));
+      if (selectedCard && selectedCard.id === cardId) {
+        setSelectedCard(prev => ({ ...prev, ...updated }));
+      }
+      setIsLiveConnected(true);
+    } catch (err) {
+      console.warn("Local card update fallback:", err);
       const card = cards.find(c => c.id === cardId);
       if (!card) return;
       const assigned = members.find(m => m.id === Number(updatedData.assigned_member_id));
       const cardTags = tags.filter(t => (updatedData.tag_ids || []).includes(t.id));
-      
       const updatedCard = {
         ...card,
         title: updatedData.title,
@@ -243,63 +238,55 @@ export default function App() {
         assigned_member: assigned || null,
         tags: cardTags,
       };
-      setCards(cards.map(c => c.id === cardId ? updatedCard : c));
-    } else {
-      try {
-        const updated = await api.updateCard(cardId, updatedData);
-        setCards(cards.map(c => c.id === cardId ? updated : c));
-      } catch (err) {
-        alert("Failed to update card: " + err.message);
+      setCards(prev => prev.map(c => c.id === cardId ? updatedCard : c));
+      if (selectedCard && selectedCard.id === cardId) {
+        setSelectedCard(updatedCard);
       }
     }
   };
 
   const handleMoveCard = async (cardId, newListId) => {
-    if (usingMock) {
-      setCards(cards.map(c => c.id === cardId ? { ...c, board_list_id: newListId } : c));
-    } else {
-      try {
-        const updated = await api.moveCard(cardId, newListId, 0);
-        setCards(cards.map(c => c.id === cardId ? updated : c));
-      } catch (err) {
-        alert("Failed to move card: " + err.message);
-      }
+    try {
+      const updated = await api.moveCard(cardId, newListId, 0);
+      setCards(prev => prev.map(c => c.id === cardId ? { ...c, board_list_id: newListId, ...updated } : c));
+      setIsLiveConnected(true);
+    } catch (err) {
+      console.warn("Local card move fallback:", err);
+      setCards(prev => prev.map(c => c.id === cardId ? { ...c, board_list_id: newListId } : c));
     }
   };
 
   const handleDeleteCard = async (cardId) => {
-    if (usingMock) {
-      setCards(cards.filter(c => c.id !== cardId));
-    } else {
-      try {
-        await api.deleteCard(cardId);
-        setCards(cards.filter(c => c.id !== cardId));
-      } catch (err) {
-        alert("Failed to delete card: " + err.message);
-      }
+    try {
+      await api.deleteCard(cardId);
+      setCards(prev => prev.filter(c => c.id !== cardId));
+      if (selectedCard && selectedCard.id === cardId) setSelectedCard(null);
+      setIsLiveConnected(true);
+    } catch (err) {
+      console.warn("Local card delete fallback:", err);
+      setCards(prev => prev.filter(c => c.id !== cardId));
+      if (selectedCard && selectedCard.id === cardId) setSelectedCard(null);
     }
   };
 
   const handleAddMember = async (memberData) => {
     if (!activeBoard) return;
-    if (usingMock) {
+    try {
+      const created = await api.createMember(activeBoard.id, memberData);
+      setMembers(prev => [...prev, created]);
+      setIsLiveConnected(true);
+    } catch (err) {
+      console.warn("Local member add fallback:", err);
       const newMember = { id: Date.now(), board_id: activeBoard.id, ...memberData };
-      setMembers([...members, newMember]);
-    } else {
-      try {
-        const created = await api.createMember(activeBoard.id, memberData);
-        setMembers([...members, created]);
-      } catch (err) {
-        alert("Failed to add member: " + err.message);
-      }
+      setMembers(prev => [...prev, newMember]);
     }
   };
 
   if (loading) {
     return (
       <div className="full-page-center">
-        <div className="loading-spinner"></div>
-        <p>Loading Forge Kanban Application...</p>
+        <div className="spinner"></div>
+        <p style={{ marginTop: '1rem', color: '#94a3b8' }}>Connecting to Live Laravel Backend API...</p>
       </div>
     );
   }
@@ -307,16 +294,17 @@ export default function App() {
   return (
     <div className="app-container">
       <Navbar 
-        boards={boards}
-        activeBoard={activeBoard}
+        boards={boards} 
+        activeBoard={activeBoard} 
         onSelectBoard={handleSelectBoard}
         onCreateBoard={handleCreateBoard}
         onOpenMembers={() => setShowMemberModal(true)}
+        isLiveConnected={isLiveConnected}
+        onRetrySync={loadInitialData}
       />
-
-      <main className="main-board-area">
+      
+      <main className="main-content">
         <KanbanBoard 
-          board={activeBoard}
           lists={lists}
           cards={cards}
           onAddList={handleAddList}
@@ -330,16 +318,17 @@ export default function App() {
       {selectedCard && (
         <CardDetailModal 
           card={selectedCard}
-          onClose={() => setSelectedCard(null)}
-          onUpdateCard={handleUpdateCard}
-          onDeleteCard={handleDeleteCard}
           members={members}
-          availableTags={tags}
+          tags={tags}
+          onClose={() => setSelectedCard(null)}
+          onUpdate={handleUpdateCard}
+          onDelete={handleDeleteCard}
         />
       )}
 
-      {showMemberModal && (
+      {showMemberModal && activeBoard && (
         <MemberManagerModal 
+          board={activeBoard}
           members={members}
           onClose={() => setShowMemberModal(false)}
           onAddMember={handleAddMember}
