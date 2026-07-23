@@ -3,7 +3,7 @@ const getApiBase = () => {
     return import.meta.env.VITE_API_BASE_URL;
   }
   if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
-    return 'https://forge-kanban-api-mq9r.onrender.com/api';
+    return '/api';
   }
   return 'http://localhost:8000/api';
 };
