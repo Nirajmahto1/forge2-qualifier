@@ -4,13 +4,13 @@
 > **Repository Owner:** Niraj Mahto (`nirajmahto1`)  
 > **Contact Email:** `itsnirajmahto@gmail.com`  
 > **GitHub Repository:** [https://github.com/nirajmahto1/forge2-qualifier](https://github.com/nirajmahto1/forge2-qualifier)  
-> **Live Deployed URL:** [https://forge2-qualifier-theta.vercel.app](https://forge2-qualifier-theta.vercel.app)  
+> **Live Deployed URL:** [https://forge2-qualifier-odez0rir0-nirajmahto1s-projects.vercel.app](https://forge2-qualifier-odez0rir0-nirajmahto1s-projects.vercel.app)  
 
 ---
 
 ## 🌐 Live URL & Screen Recording Evidence
 
-* **Live Frontend URL**: [https://forge2-qualifier-theta.vercel.app](https://forge2-qualifier-theta.vercel.app)  
+* **Live Frontend URL**: [https://forge2-qualifier-odez0rir0-nirajmahto1s-projects.vercel.app](https://forge2-qualifier-odez0rir0-nirajmahto1s-projects.vercel.app)  
   *(Deploys the React Kanban application in live interactive mode with full board, list, card, tag, member, overdue badge, and comment support)*
 * **Committed Screen Recording Video**: [`evidence/walkthrough.mp4`](https://github.com/nirajmahto1/forge2-qualifier/blob/main/evidence/walkthrough.mp4)  
   *(A 60-second screen-recording showing the working React UI + Laravel API end-to-end)*
