@@ -60,7 +60,7 @@ class DatabaseSeeder extends Seeder
             'title' => 'Implement Overdue Cards Notification',
             'description' => 'Add visual highlights and warning badges for cards past their due date.',
             'position' => 0,
-            'due_date' => '2026-07-20 10:00:00', // Past due date (OVERDUE!)
+            'due_date' => '2026-07-21 10:00:00', // Past due date relative to 2026-07-23 (OVERDUE!)
             'assigned_member_id' => $m1->id,
         ]);
         $card1->tags()->attach([$tagFrontend->id, $tagFeature->id]);
@@ -70,7 +70,7 @@ class DatabaseSeeder extends Seeder
             'title' => 'Setup CORS & API Throttle Middleware',
             'description' => 'Configure REST API headers to permit cross-origin requests from React Vite frontend.',
             'position' => 1,
-            'due_date' => '2026-07-25 18:00:00',
+            'due_date' => '2026-07-28 18:00:00',
             'assigned_member_id' => $m2->id,
         ]);
         $card2->tags()->attach([$tagBackend->id]);
@@ -80,7 +80,7 @@ class DatabaseSeeder extends Seeder
             'title' => 'Build React Vite Kanban Drag & Drop UI',
             'description' => 'Interactive board layout with custom color tags, member avatars, and inline status updates.',
             'position' => 0,
-            'due_date' => '2026-07-22 12:00:00',
+            'due_date' => '2026-07-26 12:00:00',
             'assigned_member_id' => $m1->id,
         ]);
         $card3->tags()->attach([$tagFrontend->id, $tagFeature->id]);
@@ -96,7 +96,7 @@ class DatabaseSeeder extends Seeder
             'title' => 'Wire OpenClaw & Hermes to Slack Socket Mode',
             'description' => 'Configure Slack bot tokens (xoxb/xapp) and verify roundtrip messaging API.',
             'position' => 0,
-            'due_date' => '2026-07-19 15:00:00',
+            'due_date' => '2026-07-22 15:00:00',
             'assigned_member_id' => $m3->id,
         ]);
         $card4->tags()->attach([$tagDevOps->id]);
