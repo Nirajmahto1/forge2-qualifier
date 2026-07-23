@@ -133,7 +133,7 @@ body {
   flex: 1;
   padding: 24px;
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: auto;
 }
 
 .kanban-board-wrapper {
@@ -143,8 +143,8 @@ body {
 .kanban-columns {
   display: flex;
   gap: 20px;
-  align-items: flex-start;
-  height: 100%;
+  align-items: stretch;
+  min-height: calc(100vh - 140px);
 }
 
 /* Kanban List Column */
@@ -156,7 +156,7 @@ body {
   border: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
-  max-height: 100%;
+  max-height: calc(100vh - 160px);
   padding: 16px;
 }
 
@@ -190,10 +190,29 @@ body {
 .list-cards-container {
   flex: 1;
   overflow-y: auto;
+  min-height: 100px;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding-right: 4px;
+  padding-right: 6px;
+}
+
+.list-cards-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.list-cards-container::-webkit-scrollbar-track {
+  background: var(--bg-dark);
+  border-radius: 4px;
+}
+
+.list-cards-container::-webkit-scrollbar-thumb {
+  background: var(--bg-hover);
+  border-radius: 4px;
+}
+
+.list-cards-container::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
 }
 
 /* Kanban Card */
