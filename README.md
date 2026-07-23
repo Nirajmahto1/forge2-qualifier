@@ -53,6 +53,7 @@ This repository contains the complete submission for the **Forge 2 Edition 2 Qua
 - [x] **Tags / Labels**: Add and manage custom colored tags (e.g. `Bug` 🔴, `Design` 🔵, `Feature` 🟢, `DevOps` 🟣).
 - [x] **Member Assignment**: Add members to boards and assign them to specific cards with avatars.
 - [x] **Due Date & Overdue Flagging**: Set due dates with visual overdue highlight badges (`⚠️ OVERDUE`).
+- [x] **CORS Preflight & Headers**: Configured wildcard cross-origin access (`Access-Control-Allow-Origin: *`) in `config/cors.php` and `bootstrap/app.php` for seamless Vercel + Render frontend-backend fetch calls.
 - [x] **Bonus Features**: List transfer dropdowns, Card Comments feed.
 
 ---
