@@ -92,3 +92,13 @@ When invoked manually or via background cron, it formats output into:
 - `**What I Did**`: Completed features and verified milestones.
 - `**What's Left**`: Pending technical requirements.
 - `**What Needs Your Call**`: Unresolved design choices or human approvals required.
+
+---
+
+## 5. Runtime Audit Log Files
+
+To satisfy NMG Labs evaluation rules (proving LLM calls and multi-agent execution ran genuine tasks without "agent-theatre"), raw execution dumps are stored at:
+- **Hermes Runtime Log**: [`logs/hermes_runtime.log`](logs/hermes_runtime.log) (HTTP status, prompt/completion token counts, latencies, tool calls, and Groq headers).
+- **OpenClaw Runtime Log**: [`logs/openclaw_runtime.log`](logs/openclaw_runtime.log) (Ollama model requests, file writes, migration execution, and test builds).
+- **Slack Socket Payloads**: [`slack-export/raw_agent_transcripts.json`](slack-export/raw_agent_transcripts.json) (Raw Socket Mode WSS event payloads).
+

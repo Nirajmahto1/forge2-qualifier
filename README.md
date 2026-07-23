@@ -107,17 +107,22 @@ npm run dev
 ├── .env.example                # Sanitized environment template
 ├── ARCHITECTURE.md             # System architecture & model routing
 ├── README.md                   # Setup instructions & project overview
-├── agent-log.md                # Unedited transcript of agent interaction
+├── agent-log.md                # Audit transcript mapped to git commits
 ├── openclaw.example.json       # Sanitized OpenClaw config patch
+├── render.yaml                 # 1-click Render/Railway backend deployment
+├── logs/
+│   ├── hermes_runtime.log      # Raw Hermes LLM execution traces & token usage
+│   └── openclaw_runtime.log    # Raw OpenClaw code synthesis runtime log
 ├── skills/
 │   └── status-report/
 │       └── SKILL.md            # Hermes reusable status reporting skill
 ├── slack-export/
+│   ├── raw_agent_transcripts.json  # Raw Slack Socket Mode event payloads
 │   ├── roundtrip_test.json     # Slack API round-trip test outputs
 │   └── cron_proof.md           # Proof of autonomous cron execution
 ├── evidence/
 │   ├── walkthrough.md          # Visual feature verification & screenshots
-│   └── walkthrough.mp4         # 60-second screen-recording committed to repo
+│   └── walkthrough.mp4         # Screen-recording video committed to repo
 ├── backend/                    # Laravel 13 API (SQLite)
 └── frontend/                   # React + Vite Kanban UI
 ```
