@@ -8,6 +8,14 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\CommentController;
 
+// Handle Preflight OPTIONS requests for cross-origin browser fetch calls
+Route::options('/{any}', function () {
+    return response('', 200)
+        ->header('Access-Control-Allow-Origin', '*')
+        ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+        ->header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, X-Token-Auth, Authorization, Origin');
+})->where('any', '.*');
+
 // Board Endpoints
 Route::get('/boards', [BoardController::class, 'index']);
 Route::post('/boards', [BoardController::class, 'store']);
