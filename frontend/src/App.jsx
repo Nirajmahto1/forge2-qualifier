@@ -94,6 +94,7 @@ export default function App() {
   const [showMemberModal, setShowMemberModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isLiveConnected, setIsLiveConnected] = useState(false);
+  const [apiError, setApiError] = useState(null);
 
   useEffect(() => {
     loadInitialData();
@@ -102,6 +103,7 @@ export default function App() {
   const loadInitialData = async () => {
     try {
       setLoading(true);
+      setApiError(null);
       const boardsList = await api.getBoards();
       setBoards(boardsList);
 
@@ -112,7 +114,8 @@ export default function App() {
       setTags(tagsList);
       setIsLiveConnected(true);
     } catch (err) {
-      console.warn("Backend API cold start; operating with fallback board until live sync:", err);
+      console.error("Backend API connection error:", err);
+      setApiError(err.message);
       setIsLiveConnected(false);
       setBoards([MOCK_BOARD]);
       setActiveBoard(MOCK_BOARD);
@@ -137,7 +140,8 @@ export default function App() {
       setMembers(boardMembers);
       setIsLiveConnected(true);
     } catch (err) {
-      console.warn("Using local board fallback state:", err);
+      console.error("Failed to load board details from API:", err);
+      setApiError(err.message);
     }
   };
 
@@ -154,12 +158,7 @@ export default function App() {
       await loadBoardDetails(created.id);
       setIsLiveConnected(true);
     } catch (err) {
-      console.warn("Local board creation fallback:", err);
-      const newBoard = { id: Date.now(), name: name.trim(), description: 'New Kanban Board' };
-      setBoards(prev => [...prev, newBoard]);
-      setActiveBoard(newBoard);
-      setLists([]);
-      setCards([]);
+      alert("API Error creating board: " + err.message);
     }
   };
 
@@ -171,9 +170,7 @@ export default function App() {
       setLists(prev => [...prev, newList]);
       setIsLiveConnected(true);
     } catch (err) {
-      console.warn("Local list creation fallback:", err);
-      const newList = { id: Date.now(), board_id: activeBoard.id, name: title, position: lists.length };
-      setLists(prev => [...prev, newList]);
+      alert("API Error creating list: " + err.message);
     }
   };
 
@@ -185,9 +182,7 @@ export default function App() {
       setCards(prev => prev.filter(c => c.board_list_id !== listId));
       setIsLiveConnected(true);
     } catch (err) {
-      console.warn("Local list delete fallback:", err);
-      setLists(prev => prev.filter(l => l.id !== listId));
-      setCards(prev => prev.filter(c => c.board_list_id !== listId));
+      alert("API Error deleting list: " + err.message);
     }
   };
 
@@ -198,20 +193,7 @@ export default function App() {
       setCards(prev => [...prev, createdCard]);
       setIsLiveConnected(true);
     } catch (err) {
-      console.warn("Local card creation fallback:", err);
-      const listCards = cards.filter(c => c.board_list_id === listId);
-      const newCard = {
-        id: Date.now(),
-        board_list_id: listId,
-        title: cardData.title,
-        description: cardData.description || '',
-        position: listCards.length,
-        due_date: null,
-        assigned_member_id: null,
-        tags: [],
-        comments_count: 0,
-      };
-      setCards(prev => [...prev, newCard]);
+      alert("API Error creating card: " + err.message);
     }
   };
 
@@ -224,24 +206,7 @@ export default function App() {
       }
       setIsLiveConnected(true);
     } catch (err) {
-      console.warn("Local card update fallback:", err);
-      const card = cards.find(c => c.id === cardId);
-      if (!card) return;
-      const assigned = members.find(m => m.id === Number(updatedData.assigned_member_id));
-      const cardTags = tags.filter(t => (updatedData.tag_ids || []).includes(t.id));
-      const updatedCard = {
-        ...card,
-        title: updatedData.title,
-        description: updatedData.description,
-        due_date: updatedData.due_date,
-        assigned_member_id: updatedData.assigned_member_id,
-        assigned_member: assigned || null,
-        tags: cardTags,
-      };
-      setCards(prev => prev.map(c => c.id === cardId ? updatedCard : c));
-      if (selectedCard && selectedCard.id === cardId) {
-        setSelectedCard(updatedCard);
-      }
+      alert("API Error updating card: " + err.message);
     }
   };
 
@@ -251,8 +216,7 @@ export default function App() {
       setCards(prev => prev.map(c => c.id === cardId ? { ...c, board_list_id: newListId, ...updated } : c));
       setIsLiveConnected(true);
     } catch (err) {
-      console.warn("Local card move fallback:", err);
-      setCards(prev => prev.map(c => c.id === cardId ? { ...c, board_list_id: newListId } : c));
+      alert("API Error moving card: " + err.message);
     }
   };
 
@@ -263,9 +227,7 @@ export default function App() {
       if (selectedCard && selectedCard.id === cardId) setSelectedCard(null);
       setIsLiveConnected(true);
     } catch (err) {
-      console.warn("Local card delete fallback:", err);
-      setCards(prev => prev.filter(c => c.id !== cardId));
-      if (selectedCard && selectedCard.id === cardId) setSelectedCard(null);
+      alert("API Error deleting card: " + err.message);
     }
   };
 
@@ -276,9 +238,7 @@ export default function App() {
       setMembers(prev => [...prev, created]);
       setIsLiveConnected(true);
     } catch (err) {
-      console.warn("Local member add fallback:", err);
-      const newMember = { id: Date.now(), board_id: activeBoard.id, ...memberData };
-      setMembers(prev => [...prev, newMember]);
+      alert("API Error adding member: " + err.message);
     }
   };
 
@@ -286,7 +246,7 @@ export default function App() {
     return (
       <div className="full-page-center">
         <div className="spinner"></div>
-        <p style={{ marginTop: '1rem', color: '#94a3b8' }}>Connecting to Live Laravel Backend API...</p>
+        <p style={{ marginTop: '1rem', color: '#94a3b8' }}>Connecting to Live Render Backend API...</p>
       </div>
     );
   }
@@ -302,6 +262,13 @@ export default function App() {
         isLiveConnected={isLiveConnected}
         onRetrySync={loadInitialData}
       />
+
+      {apiError && (
+        <div style={{ background: '#7f1d1d', color: '#fca5a5', padding: '0.75rem 1.5rem', textAlign: 'center', fontSize: '0.9rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem' }}>
+          <span>⚠️ Live Database Connection Error: {apiError}</span>
+          <button onClick={loadInitialData} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '0.25rem 0.75rem', borderRadius: '4px', cursor: 'pointer', fontWeight: 600 }}>Retry Connection</button>
+        </div>
+      )}
       
       <main className="main-content">
         <KanbanBoard 
